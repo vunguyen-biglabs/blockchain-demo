@@ -10,15 +10,15 @@ class App extends Component {
         super(props);
         this.state = {
             lastWinner: 0,
-            numberOfBets: 0,
-            minimumBet: 0,
-            totalBet: 0,
-            maxAmountOfBets: 0,
+            betCount: 0,
+            minimumBetAmount: 0,
+            totalBetAmount: 0,
+            maxBetCount: 0,
         };
 
         const web3 = new Web3(window.web3.currentProvider);
         this.state.web3 = web3;
-        this.state.ContractInstance = new web3.eth.Contract(abi, "0x4cA032A45c9EbAE15d9446FbA2DcD58b379E51a3");
+        this.state.ContractInstance = new web3.eth.Contract(abi, "0xfE5997bf9288f2d733BCC4BFcf1D5e3D6E618E13");
 
         window.a = this.state
     }
@@ -32,33 +32,27 @@ class App extends Component {
     }
 
     updateState(){
-
-        // this.state.ContractInstance.methods.minimumBet().then(function(data) {
-        //     this.setState({minimumBet: parseFloat(this.state.web3.fromWei(data, 'ether'))});
-        // }).catch(function (error){
-        //     console.log(error);
-        // });
-        // this.state.ContractInstance.methods.totalBet((err, result) => {
-        //     if(result != null){
-        //         this.setState({
-        //             totalBet: parseFloat(this.state.web3.fromWei(result, 'ether'))
-        //         })
-        //     }
-        // });
-        // this.state.ContractInstance.methods.numberOfBets((err, result) => {
-        //     if(result != null){
-        //         this.setState({
-        //             numberOfBets: parseInt(result)
-        //         })
-        //     }
-        // });
-        // this.state.ContractInstance.methods.maxAmountOfBets((err, result) => {
-        //     if(result != null){
-        //         this.setState({
-        //             maxAmountOfBets: parseInt(result)
-        //         })
-        //     }
-        // })
+        const self = this;
+        this.state.ContractInstance.methods.minimumBetAmount().call().then(function(data) {
+            self.setState({minimumBetAmount: self.state.web3.utils.fromWei(data, 'ether')});
+        }).catch(function (error){
+            console.log(error);
+        });
+        this.state.ContractInstance.methods.totalBetAmount().call().then(function(data) {
+            self.setState({totalBetAmount: self.state.web3.utils.fromWei(data, 'ether')});
+        }).catch(function (error){
+            console.log(error);
+        });
+        this.state.ContractInstance.methods.betCount().call().then(function(data) {
+            self.setState({betCount: data});
+        }).catch(function (error){
+            console.log(error);
+        });
+        this.state.ContractInstance.methods.maxBetCount().call().then(function(data) {
+            self.setState({maxBetCount: data});
+        }).catch(function (error){
+            console.log(error);
+        });
     }
 
 
@@ -84,7 +78,7 @@ class App extends Component {
 
         if(!bet) bet = 0.1;
 
-        if(parseFloat(bet) < this.state.minimumBet){
+        if(parseFloat(bet) < this.state.minimumBetAmount){
             alert('You must bet more than the minimum');
             cb()
         } else {
@@ -111,7 +105,7 @@ class App extends Component {
 
                 <div className="block">
                     <b>Number of bets:</b> &nbsp;
-                    <span>{this.state.numberOfBets}</span>
+                    <span>{this.state.betCount}</span>
                 </div>
                 <div className="block">
                     <b>Last number winner:</b> &nbsp;
@@ -119,20 +113,20 @@ class App extends Component {
                 </div>
                 <div className="block">
                     <b>Total ether bet:</b> &nbsp;
-                    <span>{this.state.totalBet} ether</span>
+                    <span>{this.state.totalBetAmount} ether</span>
                 </div>
                 <div className="block">
                     <b>Minimum bet:</b> &nbsp;
-                    <span>{this.state.minimumBet} ether</span>
+                    <span>{this.state.minimumBetAmount} ether</span>
                 </div>
                 <div className="block">
                     <b>Max amount of bets:</b> &nbsp;
-                    <span>{this.state.maxAmountOfBets} ether</span>
+                    <span>{this.state.maxBetCount}</span>
                 </div>
                 <hr/>
                 <h2>Vote for the next number</h2>
                 <label>
-                    <b>How much Ether do you want to bet? <input className="bet-input" ref="ether-bet" type="number" placeholder={this.state.minimumBet}/></b> ether
+                    <b>How much Ether do you want to bet? <input className="bet-input" ref="ether-bet" type="number" placeholder={this.state.minimumBetAmount}/></b> ether
                     <br/>
                 </label>
                 <ul ref="numbers">
