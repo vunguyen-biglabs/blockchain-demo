@@ -75,28 +75,20 @@ contract Casino {
         totalBetAmount += msg.value;
 
         if (betCount >= maxBetCount)
-            generateWinningNumber();
+            award();
     }
 
-    function generateWinningNumber() public payable onlyEndGame {
+    function award() payable onlyEndGame {
 
         // This isn't secure
         winningNumber = 5;
 
-        award();
-    }
-
-    function award() internal onlyEndGame {
-
-        // How much each winner gets
         uint winnerEtherAmount = totalBetAmount / betPlayers[winningNumber].length;
 
-        // Loop through all the winners to send the corresponding prize for each one
         for (uint i = 0; i < betPlayers[winningNumber].length; i++) {
             betPlayers[winningNumber][i].transfer(winnerEtherAmount);
         }
 
-        // Delete all the players for each number
         for (uint j = 1; j <= 10; j++) {
             betPlayers[j].length = 0;
         }
@@ -104,4 +96,5 @@ contract Casino {
         totalBetAmount = 0;
         betCount = 0;
     }
+
 }
