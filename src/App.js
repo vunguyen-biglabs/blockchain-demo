@@ -16,7 +16,7 @@ class App extends Component {
             maxBetCount: 0,
         };
 
-        const web3 = new Web3(window.web3.currentProvider);
+        const web3 = new Web3(Web3.givenProvider);
         this.state.web3 = web3;
         this.state.ContractInstance = new web3.eth.Contract(abi, "0xfE5997bf9288f2d733BCC4BFcf1D5e3D6E618E13");
 
