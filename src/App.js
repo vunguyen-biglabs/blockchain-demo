@@ -82,13 +82,18 @@ class App extends Component {
             alert('You must bet more than the minimum');
             cb()
         } else {
-            this.state.ContractInstance.bet(number, {
-                gas: 300000,
-                from: this.state.web3.eth.accounts[0],
-                value: this.state.web3.toWei(bet, 'ether')
-            }, (err, result) => {
+            this.state.web3.eth.getAccounts().then(e => 
+                this.state.ContractInstance.methods.bet(number).send({
+                    gas: 300000,
+                    from: e[0],
+                    value: this.state.web3.utils.toWei(bet.toString(), 'ether')
+                }).then(function(receipt){
+                    cb()
+                })
+            ).catch(function (error){
                 cb()
-            })
+                console.log(error);
+            });
         }
     }
 
